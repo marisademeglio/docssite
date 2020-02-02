@@ -70,7 +70,7 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.setBrowserSyncConfig({
         callbacks: {
          ready: function(err, bs) {
-           const content_404 = fs.readFileSync(`_site/${sitejson.rootSubdir}/404.html`);
+           const content_404 = fs.readFileSync(`_site/404.html`);
            bs.addMiddleware("*", (req, res) => {
             // Provides the 404 content without redirect.
             res.write(content_404);
@@ -123,7 +123,7 @@ module.exports = function (eleventyConfig) {
         passthroughFileCopy: true,
         dir: {
             input: "src",
-            output: `_site${pathPrefix}`
+            output: `_site/${process.env.WRITE_VERSION ? process.env.VERSION : ''}`
         }
     };
 };
