@@ -123,7 +123,7 @@ module.exports = function (eleventyConfig) {
         passthroughFileCopy: true,
         dir: {
             input: "src",
-            output: `_site/${process.env.WRITE_VERSION ? process.env.VERSION : ''}`
+            output: `_site/${process.env.WRITE_VERSION==='yes' ? process.env.VERSION : ''}`
         }
     };
 };
