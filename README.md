@@ -32,6 +32,10 @@ _site/
 
 `_site/` always has the latest version. 
 
+## Test locally
+
+`npm run test` to iterate through 3 versions of the site. End result should be as above but with up to version 0.3.0 (marked as latest).
+
 ## Settings
 
 ### Environment variables
@@ -52,10 +56,18 @@ _site/
 
 List all versions to date and mark one as current.
 
-There is an experiment in `prebuild.js` to add to this file each time the site is built with a new version, but that relies on pushing the file back to the repo (and likely Travis would be in charge of this). I don't know how much we want to rely on that - e.g. Travis may not be so great at resolving git conflicts, should they arise. Also, it's a bit opaque to do it this way, although it reduces risk of human error in, say, forgetting to update the file.
+There is an experiment, not currently in use, in `prebuild.js` to add to this file each time the site is built with a new version, but that relies on pushing the file back to the repo (and likely Travis would be in charge of this). I don't know how much we want to rely on that - e.g. Travis may not be so great at resolving git conflicts, should they arise. Also, it's a bit opaque to do it this way, although it reduces risk of human error in, say, forgetting to update the file.
 
 ## Marking if a page is not current and listing current and previous versions
 
-This depends on `latest.js` existing at the root level of the site (so: `$rootSubdir + /latest.js`). 
+This depends on `versions.js` existing at the root level of the site (so: `$rootSubdir + /versions.js`). 
 
-`latest.js` is generated from a template `latest.njk` and it gets omitted for versioned subdirectory builds. This process is managed in `.eleventy.js` via modifying the `.eleventyignore` file. 
+`versions.js` is generated from a template `versions.njk` and it gets omitted for versioned subdirectory builds. This process is managed in `.eleventy.js` via modifying the `.eleventyignore` file. 
+
+# To decide
+
+Should the top-level navigation links in, for example, `/0.1.0/docs` point to the latest pages or the pages that go with that version? E.g. "About", "Home page". 
+
+In this experiment, the whole site is versioned, so the site-wide navigation links are restricted to that version.
+
+A banner appears on each older page saying that it is not the latest.
