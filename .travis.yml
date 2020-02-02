@@ -5,7 +5,7 @@ before_script:
   - npm install
 script: 
   - cd website
-  - VERSION=$TRAVIS_TAG && npm run build && WRITE_VERSION=yes && npm run build
+  - npm run build
 deploy:
   local-dir: _site
   provider: pages
