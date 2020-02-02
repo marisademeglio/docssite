@@ -19,9 +19,9 @@
 {{ content | safe }}
 </main>
 
-<script type="module" src="/{{site.rootSubdir}}/versions.js"></script>
+<script type="module" src="{{ 'versions.js' | addSiteRootPath }}"></script>
 <script type="module">
-    import { getLatest } from '/{{site.rootSubdir}}/versions.js';
+    import { getLatest } from '{{ 'versions.js' | addSiteRootPath }}';
     document.addEventListener("DOMContentLoaded", e => {
         if ( "{{ versions.latest }}" != getLatest() ) {
             showBanner("{{ versions.latest }}", getLatest());

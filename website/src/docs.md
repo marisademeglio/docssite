@@ -13,9 +13,9 @@ Incididunt anim irure enim id enim minim mollit mollit Lorem sint ipsum pariatur
 ## Other versions
 <ul id="versionsList">
 </ul>
-<script type="module" src="/{{site.rootSubdir}}/versions.js"></script>
+<script type="module" src="{{ 'versions.js' | addSiteRootPath }}"></script>
 <script type="module">
-    import { getLatest, getReleases } from '/{{site.rootSubdir}}/versions.js';
+    import { getLatest, getReleases } from '{{ 'versions.js' | addSiteRootPath }}';
     document.addEventListener("DOMContentLoaded", e => {
         let versionsList = document.querySelector("#versionsList");
         let latest = getLatest();

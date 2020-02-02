@@ -66,6 +66,9 @@ module.exports = function (eleventyConfig) {
         return docsPath;
     });
 
+    eleventyConfig.addFilter('addSiteRootPath', file => 
+        `${sitejson.rootSubdir != "" ? `abc` : ''}/${file}`);
+
     // for when the site is served locally with browsersync (e.g. via eleventy --serve)
     eleventyConfig.setBrowserSyncConfig({
         callbacks: {
