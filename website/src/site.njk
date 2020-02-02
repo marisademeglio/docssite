@@ -1,0 +1,28 @@
+---
+permalink: site.js
+---
+function getSitePath (version) {
+    let sitePath = '';
+    if (version != '') {
+        sitePath = `/${version}/`;
+    }
+    else {
+        sitePath = '/';
+    }
+    {%- if site.rootSubdir != '' -%}
+    sitePath = `/{{site.rootSubdir}}${sitePath}`;
+    {%- endif -%}
+    return sitePath;
+}
+    
+// calculate the path to the docs subdir, taking version into account
+function getDocsPath (version) {
+    let sitePath = getSitePath(version);
+    let docsPath = `${sitePath}{{site.docsSubdir}}`;
+    return docsPath;
+}
+
+export {
+    getSitePath,
+    getDocsPath
+}

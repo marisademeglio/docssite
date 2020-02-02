@@ -20,8 +20,11 @@
 </main>
 
 <script type="module" src="{{ 'versions.js' | addSiteRootPath }}"></script>
+<script type="module" src="{{ 'site.js' | addSiteRootPath }}"></script>
 <script type="module">
     import { getLatest } from '{{ 'versions.js' | addSiteRootPath }}';
+    import { getSitePath, getDocsPath } from '{{ 'site.js' | addSiteRootPath }}';
+
     document.addEventListener("DOMContentLoaded", e => {
         if ( "{{ versions.latest }}" != getLatest() ) {
             showBanner("{{ versions.latest }}", getLatest());
@@ -37,10 +40,10 @@
             {%- endfor -%}
         ];
         if (tags.includes("docs")) {
-            banner.innerHTML += `<a href="/{{ site.rootSubdir }}/{{ site.docsSubdir }}">View the latest documentation</a>.`;
+            banner.innerHTML += `<a href="${getDocsPath('')}">View the latest documentation</a>.`;
         } 
         else {
-            banner.innerHTML += `<a href="/{{ site.rootSubdir }}">View the latest site</a>.`;
+            banner.innerHTML += `<a href="${getSitePath('')}">View the latest site</a>.`;
         }
         let main = document.querySelector("main");
         main.appendChild(banner);

@@ -14,19 +14,33 @@ Incididunt anim irure enim id enim minim mollit mollit Lorem sint ipsum pariatur
 <ul id="versionsList">
 </ul>
 <script type="module" src="{{ 'versions.js' | addSiteRootPath }}"></script>
+<script type="module" src="{{ 'site.js' | addSiteRootPath }}"></script>
 <script type="module">
     import { getLatest, getReleases } from '{{ 'versions.js' | addSiteRootPath }}';
+    import { getSitePath, getDocsPath } from '{{ 'site.js' | addSiteRootPath }}';
     document.addEventListener("DOMContentLoaded", e => {
         let versionsList = document.querySelector("#versionsList");
         let latest = getLatest();
         let releases = getReleases();
         versionsList.innerHTML = `
-            ${releases.map(release => 
-            `<li>
-                <a href="/{{site.rootSubdir}}${release !== latest ? `/${release}` : ``}/{{site.docsSubdir}}">${release}</a>${release === latest ? `<span style="font-style: italic">&nbsp;(Latest)</span>` : `` }</a>
-                ${release === "{{ versions.latest }}" ? `<span style="font-style: italic">&nbsp;(This)</span>` : ``}
-            </li>`).join('')
-            }`;
+            ${releases.map(release => {
+                let href = getDocsPath(release);
+                return `
+                <li>
+                    <a href="${href}">${release}</a>
+                    ${release === latest ? 
+                        `<span style="font-style: italic">&nbsp;(Latest)</span>` 
+                        : `` 
+                    }
+                    ${release === "{{ versions.latest }}" ? 
+                        `<span style="font-style: italic">&nbsp;(This)</span>` 
+                        : ``
+                    }
+                </li>
+                `;
+            })
+            .join('')
+        }`;
     });
 </script>
 
