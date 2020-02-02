@@ -1,0 +1,21 @@
+---
+permalink: versions.js
+---
+function getLatest() {
+    return "{{ versions.latest }}";
+}
+
+function getReleases() {
+    {%- set releases = versions.releases | sortSemver | reverse -%}
+    return [
+        
+    {%- for release in releases -%}
+        "{{ release }}",
+    {%- endfor -%}
+
+    ];
+}
+
+export {
+    getLatest, getReleases
+}

@@ -1,0 +1,56 @@
+{%- extends 'htmleton.njk' -%}
+{%- block head -%}
+<title>{{ site.title }}{%- if sectionTitle -%}: {{sectionTitle}} {%- endif -%}{%- if title -%}: {{ title }}{%- endif -%}</title>
+{%- endblock -%}
+
+{%- block body -%}
+<header>
+    <h1><a href="{{ '/' | url }}">{{ site.title }}</a></h1>
+    <nav aria-label="Main sections">
+        <ul>
+            <li><a href="{{'/docs' | url}}">Docs</a></li>
+            <li><a href="{{'/about' | url}}">About</a></li>
+        </ul>
+    </nav>
+</header>
+
+{%- block content -%}
+<main>
+{{ content | safe }}
+</main>
+
+<script type="module" src="/{{site.rootSubdir}}/versions.js"></script>
+<script type="module">
+    import { getLatest } from '/{{site.rootSubdir}}/versions.js';
+    document.addEventListener("DOMContentLoaded", e => {
+        if ( "{{ versions.latest }}" != getLatest() ) {
+            showBanner("{{ versions.latest }}", getLatest());
+        }
+    });
+    function showBanner(thisVersion, latestVersion) {
+        let banner = document.createElement("p");
+        banner.classList.add("banner");
+        banner.innerHTML = `You are viewing an old version ({{ versions.latest }}).`;
+        let tags = [
+            {%-for tag in tags -%}
+            '{{tag}}',
+            {%- endfor -%}
+        ];
+        if (tags.includes("docs")) {
+            banner.innerHTML += `<a href="/{{ site.rootSubdir }}/{{ site.docsSubdir }}">View the latest documentation</a>.`;
+        } 
+        else {
+            banner.innerHTML += `<a href="/{{ site.rootSubdir }}">View the latest site</a>.`;
+        }
+        let main = document.querySelector("main");
+        main.appendChild(banner);
+    }
+</script>
+
+{%- endblock -%}
+
+<footer>
+    <p>Last updated: {{ page.date | readableDate }}</p>
+</footer>
+
+{%- endblock -%}
