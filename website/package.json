@@ -4,8 +4,8 @@
   "description": "",
   "main": ".eleventy.js",
   "scripts": {
-    "build1": "./node_modules/.bin/cross-env VERSION=$TRAVIS_TAG ./node_modules/.bin/eleventy && ./node_modules/.bin/cross-env WRITE_VERSION='yes' ./node_modules/.bin/cross-env VERSION=$TRAVIS_TAG ./node_modules/.bin/eleventy",
-    "build": "VERSION=$TRAVIS_TAG ./node_modules/.bin/eleventy && WRITE_VERSION='yes' VERSION=$TRAVIS_TAG ./node_modules/.bin/eleventy",
+    "build": "./node_modules/.bin/cross-env VERSION=$TRAVIS_TAG ./node_modules/.bin/eleventy && ./node_modules/.bin/cross-env WRITE_VERSION='yes' ./node_modules/.bin/cross-env VERSION=$TRAVIS_TAG ./node_modules/.bin/eleventy",
+    "build1": "VERSION=$TRAVIS_TAG ./node_modules/.bin/eleventy && WRITE_VERSION='yes' VERSION=$TRAVIS_TAG ./node_modules/.bin/eleventy",
     "serve": "./node_modules/.bin/cross-env VERSION=$TRAVIS_TAG ./node_modules/.bin/eleventy --watch --serve",
     "test": "rm -rf _site/ && cp test/versions-1.json src/_data/versions.json && export TRAVIS_TAG=0.1.0 && npm run build && cp test/versions-2.json src/_data/versions.json && export TRAVIS_TAG=0.2.0 && npm run build && cp test/versions-3.json src/_data/versions.json && export TRAVIS_TAG=0.3.0 && npm run build"
   },
