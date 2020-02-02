@@ -3,7 +3,9 @@ node_js:
   - node
 before_script:
   - npm install
-script: VERSION=$TRAVIS_TAG && npm run build && WRITE_VERSION=yes && npm run build
+script: 
+  - cd website
+  - VERSION=$TRAVIS_TAG && npm run build && WRITE_VERSION=yes && npm run build
 deploy:
   local-dir: _site
   provider: pages
