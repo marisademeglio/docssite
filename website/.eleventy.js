@@ -1,25 +1,24 @@
 const nunjucks = require('nunjucks');
 const { DateTime } = require("luxon");
 const util = require('util');
-const fs = require('fs');
+const fs = require('fs-extra');
 const sitejson = JSON.parse(fs.readFileSync("src/_data/site.json"));
 const semverCompare = require('semver/functions/compare');
 
 module.exports = function (eleventyConfig) {
 
+    // restore the backup in case we overwrote it the last time we built the site
+    if (fs.existsSync(".eleventyignore.bak")) {
+        fs.copyFileSync(".eleventyignore.bak", ".eleventyignore");
+    }
     // we want the "latest.js" file to exist only at the top level, because it is the single source of truth for site versioning
     // so, add it to the ignores list if we are writing a version (i.e. to a subfolder)
     if (process.env.WRITE_VERSION == 'yes') {
-        const dynamicIgnores = [`src/latest.njk`];
+        const dynamicIgnores = [`src/latest.njk`, 'src/history'];
         fs.copyFileSync(".eleventyignore", ".eleventyignore.bak");
         let ignore = fs.readFileSync('.eleventyignore');
         ignore += `\n${dynamicIgnores.join('\n')}`;
         fs.writeFileSync(".eleventyignore", ignore);
-    }
-    else {
-        if (fs.existsSync(".eleventyignore.bak")) {
-            fs.copyFileSync(".eleventyignore.bak", ".eleventyignore");
-        }
     }
 
     let nunjucksEnv = new nunjucks.Environment(
@@ -42,7 +41,7 @@ module.exports = function (eleventyConfig) {
         return util.inspect(obj)
     });
 
-    eleventyConfig.addFilter('version', () => process.env.VERSION);
+    // eleventyConfig.addShortcode('version', () => process.env.VERSION);
 
     eleventyConfig.addFilter('sortSemver', list => list.sort((a,b) => semverCompare(a,b)));
 
@@ -105,6 +104,7 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy("src/css");
     eleventyConfig.addPassthroughCopy("src/images");
     eleventyConfig.addPassthroughCopy("src/js");
+    eleventyConfig.addPassthroughCopy("src/history");
     eleventyConfig.setDataDeepMerge(true);
 
     if (process.env.WRITE_VERSION) {

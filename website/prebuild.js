@@ -5,7 +5,7 @@ Add TRAVIS_TAG to versions.json and mark as latest
 These versions are for the software that the website is for, NOT the version in the website's package.json
 So, the version number comes from process.env.TRAVIS_TAG
 */
-const fs = require('fs');
+/*const fs = require('fs-extra');
 let versionsJsonPath = 'src/_data/versions.json';
 let file = fs.readFileSync(versionsJsonPath);
 let versions = JSON.parse(file);
@@ -18,3 +18,4 @@ if (versions.releases.indexOf(tag) == -1) {
 versions.latest = tag;
 
 fs.writeFileSync(versionsJsonPath, JSON.stringify(versions));
+*/

@@ -11,9 +11,22 @@ WRITE_VERSION=yes
 npm run build
 ```
 
-This puts the contents in `_site/` and, for example, `_site/0.1.0/`. 
+It is necessary to build a second copy of the site in a versioned subdirectory, because the links will be different than in the top-level site. We also remove versions.js in this copy, just to reduce confusion, since it should never be called directly (rather, the top-level version should always be used).
 
-Then when `TRAVIS_TAG` is updated, e.g. to `0.2.0`, the directory listing is now:
+## example
+
+```
+export TRAVIS_TAG=0.1.0
+export VERSION=$TRAVIS_TAG
+WRITE_VERSION=no
+npm run build
+WRITE_VERSION=yes
+npm run build
+```
+
+This puts the contents in `_site/` and also creates `_site/history/0.1.0.zip`. 
+
+Then when `TRAVIS_TAG` is updated, e.g. to `0.2.0`, the directory listing becomes:
 
 ```
 _site/
@@ -24,13 +37,16 @@ _site/
         css/
         docs/
         index.html
-    0.2.0/
-        css/
-        docs/
-        index.html
+    history/
+        0.1.0.zip
+        0.2.0.zip
 ```
 
+The `0.1.0/` directory was created from `history/0.1.0.zip`, saved from the first build and downloaded from the site specified in `LIVE_SITE` for the second build to use.
+
 `_site/` always has the latest version. 
+
+`_site/history/` always has a zipped copy of each version
 
 ## Test locally
 
@@ -43,6 +59,8 @@ _site/
 `VERSION`: The current version number
 
 `WRITE_VERSION`: `yes` or `no`, depending on if the site should be written to a version subdirectory.
+
+`LIVE_SITE`: Where to download /history/*.zip from
 
 ### `site.json`
 
@@ -71,3 +89,41 @@ Should the top-level navigation links in, for example, `/0.1.0/docs` point to th
 In this experiment, the whole site is versioned, so the site-wide navigation links are restricted to that version.
 
 A banner appears on each older page saying that it is not the latest.
+
+
+# approach 2: zips
+
+There's an issue with travis/git, where a new versioned subdir is seen as a new version of an old one. 
+So we need to store snapshots of the site.
+
+write /versions/index.json
+build site at /
+zip site 1.0.0.zip
+
+copy zip to /versions/1.0.0.zip
+publish site
+
+next version
+
+download /versions/index.json
+for each .. download zip
+
+update src/_data/versions.json
+
+build site to /
+build site to /3.0.0
+make zip 3.0.0
+
+from the downloaded zips:
+unzip each zip
+copy to /1.0.0
+copy to /2.0.0
+...
+
+
+now have:
+
+/
+/1.0.0
+/2.0.0
+/3.0.0
