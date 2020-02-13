@@ -1,8 +1,3 @@
-# TODO
-
-how about keeping versions in /version/ subdir to keep it cleaner
-
-
 # docssite
 Versioned documentation static site generator.
 
