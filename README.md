@@ -1,73 +1,69 @@
+# TODO
+
+how about keeping versions in /version/ subdir to keep it cleaner
+
+
 # docssite
 Versioned documentation static site generator.
 
 To build:
 
 ```
-export VERSION=$TRAVIS_TAG
-WRITE_VERSION=no
-npm run build
-WRITE_VERSION=yes
 npm run build
 ```
 
-This puts the contents in `_site/` and, for example, `_site/0.1.0/`. 
+This runs 11ty twice: once to create `_site`; once to create `_site/${version}`.
 
-Then when `TRAVIS_TAG` is updated, e.g. to `0.2.0`, the directory listing is now:
-
-```
-_site/
-    css/
-    docs/
-    index.html
-    0.1.0/
-        css/
-        docs/
-        index.html
-    0.2.0/
-        css/
-        docs/
-        index.html
-```
+It is necessary to build a second copy of the site in a versioned subdirectory, because the links will be different than in the top-level site. We also remove versions.js in this copy, just to reduce confusion, since it should never be called directly (rather, the top-level version should always be used).
 
 `_site/` always has the latest version. 
 
+`_site/history/` always has zipped copies of each version
+
 ## Test locally
 
-`npm run test` to iterate through 3 versions of the site. End result should be as above but with up to version 0.3.0 (marked as latest).
+run `test.sh`
 
 ## Settings
 
 ### Environment variables
 
-`VERSION`: The current version number
+`DOCSSITE_WRITE_VERSION`: `true` or `false`, depending on if the site should be written to a version subdirectory.
 
-`WRITE_VERSION`: `yes` or `no`, depending on if the site should be written to a version subdirectory.
+`DOCSSITE_HISTORY_URL`: Where to download `/history/*.zip` files from, e.g. `http://localhost:8181/history`.
+
+`DOCSSITE_ROOT_SUBDIR`: The subdirectory that the site is deployed to, e.g. for `http://localhost:8080/SUBDIR`, the value should be `SUBDIR`. We need to store this separately because when we run eleventy to generate the verisoned subdirs, we set its `pathPrefix` setting to `DOCSSITE_ROOT_SUBDIR + version`. So we need to know the root subdirectory independently of this.
+
+*Do not* use beginning or ending slashes with any of these properties.
 
 ### `site.json`
 
-`rootSubdir`: The path prefix for the site, not considering the version. We need to store this separately because when we run eleventy to generate the verisoned subdirs, we set its `pathPrefix` setting to `rootSubdir + version`. So we need to know the `rootSubdir` independently of this.
-
 `docsSubdir`: This is a magic string that will always be meaningful across versions as the home of the documentation section (even if it just redirects to elsewhere).
 
-*Do not* use beginning or ending slashes with either of these properties.
+*Do not* use beginning or ending slashes with this property.
 
 ### `versions.json`
 
-List all versions to date and mark one as current.
-
-There is an experiment, not currently in use, in `prebuild.js` to add to this file each time the site is built with a new version, but that relies on pushing the file back to the repo (and likely Travis would be in charge of this). I don't know how much we want to rely on that - e.g. Travis may not be so great at resolving git conflicts, should they arise. Also, it's a bit opaque to do it this way, although it reduces risk of human error in, say, forgetting to update the file.
+List all versions to date.
 
 ## Marking if a page is not current and listing current and previous versions
 
-This depends on `versions.js` existing at the root level of the site (so: `$rootSubdir + /versions.js`). 
+This depends on `versions.js` existing at the root level of the site (so: `DOCSSITE_ROOT_SUBDIR + /versions.js`). 
 
 `versions.js` is generated from a template `versions.njk` and it gets omitted for versioned subdirectory builds. This process is managed in `.eleventy.js` via modifying the `.eleventyignore` file. 
 
-# To decide
+`site.js` is another top-level javascript file. It has functions for calculating paths.
 
-Should the top-level navigation links in, for example, `/0.1.0/docs` point to the latest pages or the pages that go with that version? E.g. "About", "Home page". 
+## Tags
 
-In this experiment, the whole site is versioned, so the site-wide navigation links are restricted to that version.
+Documentation pages must be tagged "docs". This enables differentiating the "you're on an old page" notification - we can say specifically "you're on an old documentation page, go to the latest documentation".
 
-A banner appears on each older page saying that it is not the latest.
+## Exposed to the user
+
+Although top-level pages are published for each version, they are not linked to.
+
+So, while a user could enter http://site.com/0.1.0/about, there is no direct link to this page. All pages' navigation points to top-level `/about`. 
+
+An old page will generate a notificiation: "You're on an old page, go to the latest site", which leads to the start page of the site.
+
+An old documentation page will generate a documentation-specific version of that notification (see above).

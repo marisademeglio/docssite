@@ -7,9 +7,28 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Generate site",
+            "name": "Build site",
             "program": "${workspaceFolder}/website/node_modules/@11ty/eleventy/cmd.js",
-            "cwd": "${workspaceFolder}/website"
+            "cwd": "${workspaceFolder}/website",
+            "env": {
+                "DOCSSITE_VERSION": "0.1.0",
+                "DOCSSITE_WRITE_VERSION": "false",
+                "DOCSSITE_HISTORY_URL": "http://localhost:8181/history",
+                "DOCSSITE_ROOT_SUBDIR": ""
+            }
         },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Build site to version dir",
+            "program": "${workspaceFolder}/website/node_modules/@11ty/eleventy/cmd.js",
+            "cwd": "${workspaceFolder}/website",
+            "env": {
+                "DOCSSITE_VERSION": "0.1.0",
+                "DOCSSITE_WRITE_VERSION": "true",
+                "DOCSSITE_HISTORY_URL": "http://localhost:8181/history",
+                "DOCSSITE_ROOT_SUBDIR": ""
+            }
+        }
     ]
 }

@@ -4,13 +4,13 @@ permalink: site.js
 function getSitePath (version) {
     let sitePath = '';
     if (version != '') {
-        sitePath = `/${version}/`;
+        sitePath = `/version/${version}/`;
     }
     else {
         sitePath = '/';
     }
-    {%- if site.rootSubdir != '' -%}
-    sitePath = `/{{site.rootSubdir}}${sitePath}`;
+    {%- if env.DOCSSITE_ROOT_SUBDIR != '' and env.DOCSSITE_ROOT_SUBDIR != undefined -%}
+    sitePath = `/{{env.DOCSSITE_ROOT_SUBDIR}}${sitePath}`;
     {%- endif -%}
     return sitePath;
 }
@@ -18,8 +18,7 @@ function getSitePath (version) {
 // calculate the path to the docs subdir, taking version into account
 function getDocsPath (version) {
     let sitePath = getSitePath(version);
-    let docsPath = `${sitePath}{{site.docsSubdir}}`;
-    return docsPath;
+    return `${sitePath}{{site.docsSubdir}}`;
 }
 
 export {

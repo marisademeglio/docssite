@@ -2,11 +2,11 @@
 permalink: versions.js
 ---
 function getLatest() {
-    return "{{ versions.latest }}";
+    return "{{ env.DOCSSITE_VERSION }}";
 }
 
 function getReleases() {
-    {%- set releases = versions.releases | sortSemver | reverse -%}
+    {%- set releases = versions | sortSemver | reverse -%}
     return [
         
     {%- for release in releases -%}

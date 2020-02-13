@@ -5,11 +5,11 @@
 
 {%- block body -%}
 <header>
-    <h1><a href="{{ '/' | url }}">{{ site.title }}</a></h1>
+    <h1><a href="{{ '/' | addSiteRootPath }}">{{ site.title }}</a></h1>
     <nav aria-label="Main sections">
         <ul>
-            <li><a href="{{'/docs' | url}}">Docs</a></li>
-            <li><a href="{{'/about' | url}}">About</a></li>
+            <li><a href="{{'/docs' | addSiteRootPath }}">Docs</a></li>
+            <li><a href="{{'/about' | addSiteRootPath }}">About</a></li>
         </ul>
     </nav>
 </header>
@@ -19,31 +19,31 @@
 {{ content | safe }}
 </main>
 
-<script type="module" src="{{ 'versions.js' | addSiteRootPath }}"></script>
-<script type="module" src="{{ 'site.js' | addSiteRootPath }}"></script>
+<script type="module" src="{{ '/versions.js' | addSiteRootPath }}"></script>
+<script type="module" src="{{ '/site.js' | addSiteRootPath }}"></script>
 <script type="module">
-    import { getLatest } from '{{ 'versions.js' | addSiteRootPath }}';
-    import { getSitePath, getDocsPath } from '{{ 'site.js' | addSiteRootPath }}';
+    import { getLatest } from '{{ '/versions.js' | addSiteRootPath }}';
+    import { getSitePath, getDocsPath } from '{{ '/site.js' | addSiteRootPath }}';
 
     document.addEventListener("DOMContentLoaded", e => {
-        if ( "{{ versions.latest }}" != getLatest() ) {
-            showBanner("{{ versions.latest }}", getLatest());
+        if ( "{{ env.DOCSSITE_VERSION }}" != getLatest() ) {
+            showBanner("{{ env.DOCSSITE_VERSION }}", getLatest());
         }
     });
     function showBanner(thisVersion, latestVersion) {
         let banner = document.createElement("p");
         banner.classList.add("banner");
-        banner.innerHTML = `You are viewing an old version ({{ versions.latest }}).`;
+        banner.innerHTML = `You are viewing an old version ({{ env.DOCSSITE_VERSION }}).`;
         let tags = [
             {%-for tag in tags -%}
             '{{tag}}',
             {%- endfor -%}
         ];
         if (tags.includes("docs")) {
-            banner.innerHTML += `<a href="${getDocsPath('')}">View the latest documentation</a>.`;
+            banner.innerHTML += ` <a href="${getDocsPath('')}">View the latest documentation</a>.`;
         } 
         else {
-            banner.innerHTML += `<a href="${getSitePath('')}">View the latest site</a>.`;
+            banner.innerHTML += ` <a href="${getSitePath('')}">View the latest site</a>.`;
         }
         let main = document.querySelector("main");
         main.appendChild(banner);
