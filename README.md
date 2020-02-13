@@ -9,49 +9,16 @@ Versioned documentation static site generator.
 To build:
 
 ```
-export VERSION=$TRAVIS_TAG
-WRITE_VERSION=no
-npm run build
-WRITE_VERSION=yes
 npm run build
 ```
+
+This runs 11ty twice: once to create `_site`; once to create `_site/${version}`.
 
 It is necessary to build a second copy of the site in a versioned subdirectory, because the links will be different than in the top-level site. We also remove versions.js in this copy, just to reduce confusion, since it should never be called directly (rather, the top-level version should always be used).
 
-## example
-
-```
-export TRAVIS_TAG=0.1.0
-export VERSION=$TRAVIS_TAG
-WRITE_VERSION=no
-npm run build
-WRITE_VERSION=yes
-npm run build
-```
-
-This puts the contents in `_site/` and also creates `_site/history/0.1.0.zip`. 
-
-Then when `TRAVIS_TAG` is updated, e.g. to `0.2.0`, the directory listing becomes:
-
-```
-_site/
-    css/
-    docs/
-    index.html
-    0.1.0/
-        css/
-        docs/
-        index.html
-    history/
-        0.1.0.zip
-        0.2.0.zip
-```
-
-The `0.1.0/` directory was created from `history/0.1.0.zip`, saved from the first build and downloaded from the site specified in `LIVE_HISTORY` for the second build to use.
-
 `_site/` always has the latest version. 
 
-`_site/history/` always has a zipped copy of each version
+`_site/history/` always has zipped copies of each version
 
 ## Test locally
 
@@ -85,12 +52,18 @@ This depends on `versions.js` existing at the root level of the site (so: `EPUBC
 
 `versions.js` is generated from a template `versions.njk` and it gets omitted for versioned subdirectory builds. This process is managed in `.eleventy.js` via modifying the `.eleventyignore` file. 
 
-# To decide
+`site.js` is another top-level javascript file. It has functions for calculating paths.
 
-Should the top-level navigation links in, for example, `/0.1.0/docs` point to the latest pages or the pages that go with that version? E.g. "About", "Home page". 
+## Tags
 
-In this experiment, the whole site is versioned, so the site-wide navigation links are restricted to that version.
+Documentation pages must be tagged "docs". This enables differentiating the "you're on an old page" notification - we can say specifically "you're on an old documentation page, go to the latest documentation".
 
-A banner appears on each older page saying that it is not the latest.
+## Exposed to the user
 
+Although top-level pages are published for each version, they are not linked to.
 
+So, while a user could enter http://site.com/0.1.0/about, there is no direct link to this page. All pages' navigation points to top-level `/about`. 
+
+An old page will generate a notificiation: "You're on an old page, go to the latest site", which leads to the start page of the site.
+
+An old documentation page will generate a documentation-specific version of that notification (see above).
