@@ -9,8 +9,8 @@ function getSitePath (version) {
     else {
         sitePath = '/';
     }
-    {%- if site.rootSubdir != '' -%}
-    sitePath = `/{{site.rootSubdir}}${sitePath}`;
+    {%- if env.ROOT_SUBDIR != '' and env.ROOT_SUBDIR != undefined -%}
+    sitePath = `/{{env.ROOT_SUBDIR}}${sitePath}`;
     {%- endif -%}
     return sitePath;
 }

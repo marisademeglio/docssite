@@ -2,7 +2,8 @@ const nunjucks = require('nunjucks');
 const { DateTime } = require("luxon");
 const util = require('util');
 const fs = require('fs-extra');
-const sitejson = JSON.parse(fs.readFileSync("src/_data/site.json"));
+const site = JSON.parse(fs.readFileSync("src/_data/site.json"));
+const versions = JSON.parse(fs.readFileSync("src/_data/versions.json"));
 const semverCompare = require('semver/functions/compare');
 
 module.exports = function (eleventyConfig) {
@@ -13,7 +14,7 @@ module.exports = function (eleventyConfig) {
     }
     // we want the "latest.js" file to exist only at the top level, because it is the single source of truth for site versioning
     // so, add it to the ignores list if we are writing a version (i.e. to a subfolder)
-    if (process.env.WRITE_VERSION == 'yes') {
+    if (process.env.EPUBCHK_SITE_WRITE_VERSION == 'yes') {
         const dynamicIgnores = [`src/latest.njk`, 'src/history'];
         fs.copyFileSync(".eleventyignore", ".eleventyignore.bak");
         let ignore = fs.readFileSync('.eleventyignore');
@@ -41,8 +42,6 @@ module.exports = function (eleventyConfig) {
         return util.inspect(obj)
     });
 
-    // eleventyConfig.addShortcode('version', () => process.env.VERSION);
-
     eleventyConfig.addFilter('sortSemver', list => list.sort((a,b) => semverCompare(a,b)));
 
 
@@ -52,8 +51,8 @@ module.exports = function (eleventyConfig) {
         if (version != '') {
             sitePath = `/${version}`;
         }
-        if (sitejson.rootSubdir != '') {
-            sitePath = `/${sitejson.rootSubdir}${sitePath}`;
+        if (process.env.EPUBCHECK_SITE_ROOT_SUBDIR != '' && process.env.EPUBCHECK_SITE_ROOT_SUBDIR != undefined) {
+            sitePath = `/${process.env.EPUBCHECK_SITE_ROOT_SUBDIR}${sitePath}`;
         }
         return sitePath;
     };
@@ -61,12 +60,14 @@ module.exports = function (eleventyConfig) {
     // calculate the path to the docs subdir, taking version into account
     eleventyConfig.addFilter('getDocsPath', version => {
         let sitePath = getSitePath(version);
-        let docsPath = `${sitePath}/${sitejson.docsSubdir}`;
+        let docsPath = `${sitePath}/${site.docsSubdir}`;
         return docsPath;
     });
 
     eleventyConfig.addFilter('addSiteRootPath', file => 
-        `${sitejson.rootSubdir != "" ? `/${sitejson.rootSubdir}` : ''}/${file}`);
+        `${process.env.EPUBCHECK_SITE_ROOT_SUBDIR != "" && 
+            process.env.EPUBCHECK_SITE_ROOT_SUBDIR != undefined ? 
+            `/${process.env.EPUBCHECK_SITE_ROOT_SUBDIR}` : ''}${file}`);
 
     // for when the site is served locally with browsersync (e.g. via eleventy --serve)
     eleventyConfig.setBrowserSyncConfig({
@@ -107,13 +108,14 @@ module.exports = function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy("src/history");
     eleventyConfig.setDataDeepMerge(true);
 
-    if (process.env.WRITE_VERSION) {
+    if (process.env.EPUBCHECK_SITE_WRITE_VERSION) {
         console.log("Writing site to versioned subdirectory");
     }
     else {
         console.log("Writing site to main directory");
     }
-    let pathPrefix = process.env.WRITE_VERSION === 'yes' ? getSitePath(process.env.VERSION) : getSitePath('');
+    let pathPrefix = process.env.EPUBCHECK_SITE_WRITE_VERSION === 'yes' ? 
+        getSitePath(versions.latest) : getSitePath('');
     console.log('PATH PREFIX: ', pathPrefix);
     return {
         templateFormats: [
@@ -126,7 +128,8 @@ module.exports = function (eleventyConfig) {
         passthroughFileCopy: true,
         dir: {
             input: "src",
-            output: `_site/${process.env.WRITE_VERSION==='yes' ? process.env.VERSION : ''}`
+            output: `_site/${process.env.EPUBCHECK_SITE_WRITE_VERSION==='yes' ? 
+                versions.latest : ''}`
         }
     };
 };

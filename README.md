@@ -1,11 +1,5 @@
 # TODO
 
-travis build error re  `history` folder
-
-travis LIVE_HISTORY undefined
-
-don't link to latest e.g. 0.3.0 from docs page
-
 how about keeping versions in /version/ subdir to keep it cleaner
 
 
@@ -67,29 +61,27 @@ run `test.sh`
 
 ### Environment variables
 
-`VERSION`: The current version number
+`EPUBCHECK_SITE_WRITE_VERSION`: `yes` or `no`, depending on if the site should be written to a version subdirectory.
 
-`WRITE_VERSION`: `yes` or `no`, depending on if the site should be written to a version subdirectory.
+`EPUBCHECK_SITE_LIVE_HISTORY`: Where to download `/history/*.zip` files from, e.g. `http://localhost:8181/history`.
 
-`LIVE_HISTORY`: Where to download `/history/*.zip` files from
+`EPUBCHECK_SITE_ROOT_SUBDIR`: The subdirectory that the site is deployed to, e.g. for `http://localhost:8080/SUBDIR`, the value should be `SUBDIR`. We need to store this separately because when we run eleventy to generate the verisoned subdirs, we set its `pathPrefix` setting to `EPUBCHECK_SITE_ROOT_SUBDIR + version`. So we need to know the root subdirectory independently of this.
+
+*Do not* use beginning or ending slashes with any of these properties.
 
 ### `site.json`
 
-`rootSubdir`: The path prefix for the site, not considering the version. We need to store this separately because when we run eleventy to generate the verisoned subdirs, we set its `pathPrefix` setting to `rootSubdir + version`. So we need to know the `rootSubdir` independently of this.
-
 `docsSubdir`: This is a magic string that will always be meaningful across versions as the home of the documentation section (even if it just redirects to elsewhere).
 
-*Do not* use beginning or ending slashes with either of these properties.
+*Do not* use beginning or ending slashes with this property.
 
 ### `versions.json`
 
 List all versions to date and mark one as current.
 
-There is an experiment, not currently in use, in `prebuild.js` to add to this file each time the site is built with a new version, but that relies on pushing the file back to the repo (and likely Travis would be in charge of this). I don't know how much we want to rely on that - e.g. Travis may not be so great at resolving git conflicts, should they arise. Also, it's a bit opaque to do it this way, although it reduces risk of human error in, say, forgetting to update the file.
-
 ## Marking if a page is not current and listing current and previous versions
 
-This depends on `versions.js` existing at the root level of the site (so: `$rootSubdir + /versions.js`). 
+This depends on `versions.js` existing at the root level of the site (so: `EPUBCHECK_SITE_ROOT_SUBDIR + /versions.js`). 
 
 `versions.js` is generated from a template `versions.njk` and it gets omitted for versioned subdirectory builds. This process is managed in `.eleventy.js` via modifying the `.eleventyignore` file. 
 

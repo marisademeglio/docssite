@@ -12,12 +12,13 @@ const path = require('path');
 const axios = require('axios');
 const unzipper = require('unzipper');
 
-console.log("Version? ", process.env.VERSION);
-console.log("Write version? ", process.env.WRITE_VERSION);
-console.log("Live history? ", process.env.LIVE_HISTORY);
-
 // get the list of previous versions from src/_data/versions.json
 const versions = JSON.parse(fs.readFileSync('src/_data/versions.json'));
+
+console.log("Version? ", versions.latest);
+console.log("Write version? ", process.env.EPUBCHECK_SITE_WRITE_VERSION);
+console.log("Live history? ", process.env.EPUBCHECK_SITE_LIVE_HISTORY);
+
 
 (async () => {
     
@@ -33,7 +34,7 @@ const versions = JSON.parse(fs.readFileSync('src/_data/versions.json'));
     await Promise.all(versions.releases.map(async v => {
         if (v != versions.latest) {
             try {
-                let zipfile = `${process.env.LIVE_HISTORY}/${v}.zip`;
+                let zipfile = `${process.env.EPUBCHECK_SITE_LIVE_HISTORY}/${v}.zip`;
                 console.log("Downloading ", zipfile);
 
                 let result = await axios.get(zipfile, {
@@ -62,9 +63,9 @@ const versions = JSON.parse(fs.readFileSync('src/_data/versions.json'));
     }
 
     // save our current version from the versioned subdir output
-    let outdir = path.join(__dirname, `/_site/${process.env.VERSION}`);
+    let outdir = path.join(__dirname, `/_site/${versions.latest}`);
     console.log("Zipping current folder ", outdir);
-    await zip(outdir, path.join(historyFolder, `${process.env.VERSION}.zip`));
+    await zip(outdir, path.join(historyFolder, `${versions.latest}.zip`));
     // remove the versioned subdir - we don't need it as it was for the latest version of the site
     console.log("Deleting folder ", outdir);
     await rimraf(outdir, err => {
