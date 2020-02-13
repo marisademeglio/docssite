@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/docssite/version/0.1.0/css/style.css"><title>Test Site</title></head>
+    <body><header>
+    <h1><a href="/docssite/">Test Site</a></h1>
+    <nav aria-label="Main sections">
+        <ul>
+            <li><a href="/docssite/docs">Docs</a></li>
+            <li><a href="/docssite/about">About</a></li>
+        </ul>
+    </nav>
+</header><main>
+<h1 id="about">About</h1>
+<p>Culpa culpa amet laboris nulla.</p>
+<p>Sit culpa voluptate anim enim adipisicing aliqua ut veniam aliqua reprehenderit cupidatat quis aliqua eiusmod.</p>
+<p>Consequat sit reprehenderit amet dolore proident id et excepteur dolor ut veniam nisi sunt aute!</p>
+
+</main>
+
+<script type="module" src="/docssite/versions.js"></script>
+<script type="module" src="/docssite/site.js"></script>
+<script type="module">
+    import { getLatest } from '/docssite/versions.js';
+    import { getSitePath, getDocsPath } from '/docssite/site.js';
+
+    document.addEventListener("DOMContentLoaded", e => {
+        if ( "0.1.0" != getLatest() ) {
+            showBanner("0.1.0", getLatest());
+        }
+    });
+    function showBanner(thisVersion, latestVersion) {
+        let banner = document.createElement("p");
+        banner.classList.add("banner");
+        banner.innerHTML = `You are viewing an old version (0.1.0).`;
+        let tags = [];
+        if (tags.includes("docs")) {
+            banner.innerHTML += ` <a href="${getDocsPath('')}">View the latest documentation</a>.`;
+        } 
+        else {
+            banner.innerHTML += ` <a href="${getSitePath('')}">View the latest site</a>.`;
+        }
+        let main = document.querySelector("main");
+        main.appendChild(banner);
+    }
+</script><footer>
+    <p>Last updated: 13 Feb 2020</p>
+</footer></body>
+</html>
