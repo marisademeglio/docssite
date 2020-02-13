@@ -28,13 +28,20 @@ run `test.sh`
 
 ### Environment variables
 
-`DOCSSITE_WRITE_VERSION`: `true` or `false`, depending on if the site should be written to a version subdirectory.
+#### Please set these values
 
-`DOCSSITE_HISTORY_URL`: Where to download `/history/*.zip` files from, e.g. `http://localhost:8181/history`.
+`DOCSSITE_HISTORY_URL`: Where to download `/history/*.zip` files from, e.g. `http://localhost:8181/history`. 
 
-`DOCSSITE_ROOT_SUBDIR`: The subdirectory that the site is deployed to, e.g. for `http://localhost:8080/SUBDIR`, the value should be `SUBDIR`. We need to store this separately because when we run eleventy to generate the verisoned subdirs, we set its `pathPrefix` setting to `DOCSSITE_ROOT_SUBDIR + version`. So we need to know the root subdirectory independently of this.
+`DOCSSITE_ROOT_SUBDIR`: The subdirectory that the site is deployed to, e.g. for `http://localhost:8080/SUBDIR`, the value should be `SUBDIR`. We need to store this separately because when we run eleventy to generate the verisoned subdirs, we set its `pathPrefix` setting to `DOCSSITE_ROOT_SUBDIR + /verison/ + DOCSSITE_VERSION`. So we need to know the root subdirectory independently of this. 
 
 *Do not* use beginning or ending slashes with any of these properties.
+
+#### Automatically set by the build script
+
+`DOCSSITE_VERSION`: The current version of the site. Automatically set to `$TRAVIS_TAG` in the build script.
+
+`DOCSSITE_WRITE_VERSION`: `true` or `false`, depending on if the site should be written to a versioned subdirectory, e.g. `/version/0.1.0`. 
+
 
 ### `site.json`
 
@@ -44,7 +51,7 @@ run `test.sh`
 
 ### `versions.json`
 
-List all versions to date.
+Array of all versions to date.
 
 ## Marking if a page is not current and listing current and previous versions
 
@@ -62,7 +69,7 @@ Documentation pages must be tagged "docs". This enables differentiating the "you
 
 Although top-level pages are published for each version, they are not linked to.
 
-So, while a user could enter http://site.com/0.1.0/about, there is no direct link to this page. All pages' navigation points to top-level `/about`. 
+So, while a user could enter `http://site.com/version/0.1.0/about`, there is no direct link to this page. All pages' navigation points to top-level `/about`. 
 
 An old page will generate a notificiation: "You're on an old page, go to the latest site", which leads to the start page of the site.
 
