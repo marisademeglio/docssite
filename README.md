@@ -1,3 +1,14 @@
+# TODO
+
+travis build error re  `history` folder
+
+travis LIVE_HISTORY undefined
+
+don't link to latest e.g. 0.3.0 from docs page
+
+how about keeping versions in /version/ subdir to keep it cleaner
+
+
 # docssite
 Versioned documentation static site generator.
 
@@ -42,7 +53,7 @@ _site/
         0.2.0.zip
 ```
 
-The `0.1.0/` directory was created from `history/0.1.0.zip`, saved from the first build and downloaded from the site specified in `LIVE_SITE` for the second build to use.
+The `0.1.0/` directory was created from `history/0.1.0.zip`, saved from the first build and downloaded from the site specified in `LIVE_HISTORY` for the second build to use.
 
 `_site/` always has the latest version. 
 
@@ -50,7 +61,7 @@ The `0.1.0/` directory was created from `history/0.1.0.zip`, saved from the firs
 
 ## Test locally
 
-`npm run test` to iterate through 3 versions of the site. End result should be as above but with up to version 0.3.0 (marked as latest).
+run `test.sh`
 
 ## Settings
 
@@ -60,7 +71,7 @@ The `0.1.0/` directory was created from `history/0.1.0.zip`, saved from the firs
 
 `WRITE_VERSION`: `yes` or `no`, depending on if the site should be written to a version subdirectory.
 
-`LIVE_SITE`: Where to download /history/*.zip from
+`LIVE_HISTORY`: Where to download `/history/*.zip` files from
 
 ### `site.json`
 
@@ -91,39 +102,3 @@ In this experiment, the whole site is versioned, so the site-wide navigation lin
 A banner appears on each older page saying that it is not the latest.
 
 
-# approach 2: zips
-
-There's an issue with travis/git, where a new versioned subdir is seen as a new version of an old one. 
-So we need to store snapshots of the site.
-
-write /versions/index.json
-build site at /
-zip site 1.0.0.zip
-
-copy zip to /versions/1.0.0.zip
-publish site
-
-next version
-
-download /versions/index.json
-for each .. download zip
-
-update src/_data/versions.json
-
-build site to /
-build site to /3.0.0
-make zip 3.0.0
-
-from the downloaded zips:
-unzip each zip
-copy to /1.0.0
-copy to /2.0.0
-...
-
-
-now have:
-
-/
-/1.0.0
-/2.0.0
-/3.0.0

@@ -1,6 +1,7 @@
 echo "Deleting _site and _serve";
 rm -rf _site
 
+export LIVE_HISTORY=http://localhost:8181/history
 export TRAVIS_TAG=0.1.0
 echo "Simulating build $TRAVIS_TAG"
 
@@ -27,8 +28,7 @@ done
 export TRAVIS_TAG=0.2.0
 echo "Simulating build $TRAVIS_TAG"
 cp test/versions-2.json src/_data/versions.json
-#npm run build
-./node_modules/.bin/cross-env VERSION=$TRAVIS_TAG ./node_modules/.bin/eleventy && ./node_modules/.bin/cross-env WRITE_VERSION='yes' ./node_modules/.bin/cross-env VERSION=$TRAVIS_TAG ./node_modules/.bin/eleventy
+npm run build
 wait
 
 rm -rf serve

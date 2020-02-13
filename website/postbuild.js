@@ -24,16 +24,22 @@ const versions = JSON.parse(fs.readFileSync('src/_data/versions.json'));
     // download all the previous zips from the current website
     // save them in _site/history
     let broken = [];
+    let historyFolder = path.join(__dirname, '_site/history/');
+    if (!fs.existsSync(historyFolder)) {
+        console.log("Creating ", historyFolder);
+        fs.mkdirSync(historyFolder);
+    }
+    
     await Promise.all(versions.releases.map(async v => {
         if (v != versions.latest) {
             try {
-                console.log("Downloading zip of ", v);
-                let zipfile = v + '.zip';
-                let result = await axios.get(`${process.env.LIVE_HISTORY}/${zipfile}`, 
-                {
+                let zipfile = `${process.env.LIVE_HISTORY}/${v}.zip`;
+                console.log("Downloading ", zipfile);
+
+                let result = await axios.get(zipfile, {
                     responseType: 'arraybuffer'
                 });
-                const dest = path.join(__dirname, '_site/history/', zipfile);
+                const dest = path.join(historyFolder, v + '.zip');
                 console.log("Saving ", dest);
                 await fs.writeFile(dest, result.data); 
 
@@ -43,6 +49,7 @@ const versions = JSON.parse(fs.readFileSync('src/_data/versions.json'));
                 await unzip.extract({path: path.join(__dirname, '_site/' + v), concurrency: 5});
             }
             catch(err) {
+                console.log(err);
                 broken.push(v);
             }
         }       
@@ -57,7 +64,7 @@ const versions = JSON.parse(fs.readFileSync('src/_data/versions.json'));
     // save our current version from the versioned subdir output
     let outdir = path.join(__dirname, `/_site/${process.env.VERSION}`);
     console.log("Zipping current folder ", outdir);
-    await zip(outdir, path.join(__dirname, `/_site/history/${process.env.VERSION}.zip`));
+    await zip(outdir, path.join(historyFolder, `${process.env.VERSION}.zip`));
     // remove the versioned subdir - we don't need it as it was for the latest version of the site
     console.log("Deleting folder ", outdir);
     await rimraf(outdir, err => {

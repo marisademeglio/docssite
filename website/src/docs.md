@@ -22,22 +22,19 @@ Incididunt anim irure enim id enim minim mollit mollit Lorem sint ipsum pariatur
         let versionsList = document.querySelector("#versionsList");
         let latest = getLatest();
         let releases = getReleases();
+        let thisVersion = "{{ versions.latest }}";
         versionsList.innerHTML = `
             ${releases.map(release => {
                 let href = getDocsPath(release);
-                return `
-                <li>
-                    <a href="${href}">${release}</a>
-                    ${release === latest ? 
-                        `<span style="font-style: italic">&nbsp;(Latest)</span>` 
-                        : `` 
-                    }
-                    ${release === "{{ versions.latest }}" ? 
-                        `<span style="font-style: italic">&nbsp;(This)</span>` 
-                        : ``
-                    }
-                </li>
-                `;
+                return release !== latest ? 
+                    `<li>
+                        <a href="${href}">${release}</a>
+                        ${release === thisVersion ? 
+                            `<span style="font-style: italic">&nbsp;(This)</span>` 
+                            : ``
+                        }
+                    </li>
+                    ` : '';                
             })
             .join('')
         }`;
