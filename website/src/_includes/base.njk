@@ -26,14 +26,14 @@
     import { getSitePath, getDocsPath } from '{{ '/site.js' | addSiteRootPath }}';
 
     document.addEventListener("DOMContentLoaded", e => {
-        if ( "{{ versions.latest }}" != getLatest() ) {
-            showBanner("{{ versions.latest }}", getLatest());
+        if ( "{{ env.DOCSSITE_VERSION }}" != getLatest() ) {
+            showBanner("{{ env.DOCSSITE_VERSION }}", getLatest());
         }
     });
     function showBanner(thisVersion, latestVersion) {
         let banner = document.createElement("p");
         banner.classList.add("banner");
-        banner.innerHTML = `You are viewing an old version ({{ versions.latest }}).`;
+        banner.innerHTML = `You are viewing an old version ({{ env.DOCSSITE_VERSION }}).`;
         let tags = [
             {%-for tag in tags -%}
             '{{tag}}',

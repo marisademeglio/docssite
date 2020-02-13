@@ -4,9 +4,9 @@
   "description": "",
   "main": ".eleventy.js",
   "scripts": {
-    "build": "./node_modules/.bin/eleventy && ./node_modules/.bin/cross-env EPUBCHECK_SITE_WRITE_VERSION='yes' ./node_modules/.bin/eleventy",
+    "build": "./node_modules/.bin/cross-env DOCSSITE_VERSION=$TRAVIS_TAG ./node_modules/.bin/eleventy && ./node_modules/.bin/cross-env DOCSSITE_WRITE_VERSION=true ./node_modules/.bin/cross-env DOCSSITE_VERSION=$TRAVIS_TAG ./node_modules/.bin/eleventy",
     "serve": "./node_modules/.bin/eleventy --watch --serve",
-    "postbuild": "./node_modules/.bin/cross-env EPUBCHECK_SITE_WRITE_VERSION=yes node postbuild.js"
+    "postbuild": "./node_modules/.bin/cross-env DOCSSITE_VERSION=$TRAVIS_TAG ./node_modules/.bin/cross-env DOCSSITE_WRITE_VERSION=true node postbuild.js"
   },
   "keywords": [],
   "author": "",

@@ -12,12 +12,11 @@ const path = require('path');
 const axios = require('axios');
 const unzipper = require('unzipper');
 
-// get the list of previous versions from src/_data/versions.json
 const versions = JSON.parse(fs.readFileSync('src/_data/versions.json'));
 
-console.log("Version? ", versions.latest);
-console.log("Write version? ", process.env.EPUBCHECK_SITE_WRITE_VERSION);
-console.log("Live history? ", process.env.EPUBCHECK_SITE_LIVE_HISTORY);
+console.log("Version? ", process.env.DOCSSITE_VERSION);
+console.log("Write version? ", process.env.DOCSSITE_WRITE_VERSION);
+console.log("Live history? ", process.env.DOCSSITE_HISTORY_URL);
 
 
 (async () => {
@@ -30,11 +29,15 @@ console.log("Live history? ", process.env.EPUBCHECK_SITE_LIVE_HISTORY);
         console.log("Creating ", historyFolder);
         fs.mkdirSync(historyFolder);
     }
+    if (!fs.existsSync("_site/version/")) {
+        console.log("Creating _site/version/");
+        fs.mkdirSync("_site/version/");
+    }
     
-    await Promise.all(versions.releases.map(async v => {
-        if (v != versions.latest) {
+    await Promise.all(versions.map(async v => {
+        if (v != process.env.DOCSSITE_VERSION) {
             try {
-                let zipfile = `${process.env.EPUBCHECK_SITE_LIVE_HISTORY}/${v}.zip`;
+                let zipfile = `${process.env.DOCSSITE_HISTORY_URL}/${v}.zip`;
                 console.log("Downloading ", zipfile);
 
                 let result = await axios.get(zipfile, {
@@ -47,7 +50,7 @@ console.log("Live history? ", process.env.EPUBCHECK_SITE_LIVE_HISTORY);
                 // unzip them into _site
                 console.log("Inflating to _site: ", dest);
                 let unzip = await unzipper.Open.file(dest);
-                await unzip.extract({path: path.join(__dirname, '_site/' + v), concurrency: 5});
+                await unzip.extract({path: path.join(__dirname, '_site/version/' + v), concurrency: 5});
             }
             catch(err) {
                 console.log(err);
@@ -63,9 +66,9 @@ console.log("Live history? ", process.env.EPUBCHECK_SITE_LIVE_HISTORY);
     }
 
     // save our current version from the versioned subdir output
-    let outdir = path.join(__dirname, `/_site/${versions.latest}`);
+    let outdir = path.join(__dirname, `/_site/version/${process.env.DOCSSITE_VERSION}`);
     console.log("Zipping current folder ", outdir);
-    await zip(outdir, path.join(historyFolder, `${versions.latest}.zip`));
+    await zip(outdir, path.join(historyFolder, `${process.env.DOCSSITE_VERSION}.zip`));
     // remove the versioned subdir - we don't need it as it was for the latest version of the site
     console.log("Deleting folder ", outdir);
     await rimraf(outdir, err => {

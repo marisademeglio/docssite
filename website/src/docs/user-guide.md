@@ -4,6 +4,6 @@ title: User Guide
 
 # User Guide
 
-Version {{ versions.latest }}
+Version {{ env.DOCSSITE_VERSION }}
 
 Mollit ad sint eiusmod nisi sit eiusmod duis.

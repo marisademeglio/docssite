@@ -4,6 +4,6 @@ title: Developer Guide
 
 # Developer Guide
 
-Version {{ versions.latest }}
+Version {{ env.DOCSSITE_VERSION }}
 
 Anim dolore irure mollit sit labore cupidatat et reprehenderit.

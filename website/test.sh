@@ -1,8 +1,9 @@
 echo "Deleting _site and _serve";
 rm -rf _site
 
-export EPUBCHECK_SITE_LIVE_HISTORY=http://localhost:8181/history
-echo "Simulating build 0.1.0"
+export DOCSSITE_HISTORY_URL=http://localhost:8181/history
+export TRAVIS_TAG=0.1.0
+echo "Simulating build $TRAVIS_TAG"
 
 cp test/versions-1.json src/_data/versions.json
 npm run build
@@ -24,7 +25,8 @@ echo "waiting for the keypress"
 fi
 done
 
-echo "Simulating build 0.2.0"
+export TRAVIS_TAG=0.2.0
+echo "Simulating build $TRAVIS_TAG"
 cp test/versions-2.json src/_data/versions.json
 npm run build
 wait
@@ -32,7 +34,8 @@ wait
 rm -rf serve
 cp -R _site serve
 
-echo "Simulating build 0.3.0"
+export TRAVIS_TAG=0.3.0
+echo "Simulating build $TRAVIS_TAG"
 cp test/versions-3.json src/_data/versions.json
 npm run build
 wait

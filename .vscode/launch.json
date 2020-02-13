@@ -11,7 +11,10 @@
             "program": "${workspaceFolder}/website/node_modules/@11ty/eleventy/cmd.js",
             "cwd": "${workspaceFolder}/website",
             "env": {
-                "VERSION": "0.1.0"
+                "DOCSSITE_VERSION": "0.1.0",
+                "DOCSSITE_WRITE_VERSION": "false",
+                "DOCSSITE_HISTORY_URL": "http://localhost:8181/history",
+                "DOCSSITE_ROOT_SUBDIR": ""
             }
         },
         {
@@ -21,20 +24,10 @@
             "program": "${workspaceFolder}/website/node_modules/@11ty/eleventy/cmd.js",
             "cwd": "${workspaceFolder}/website",
             "env": {
-                "VERSION": "0.1.0",
-                "WRITE_VERSION": "yes"
-            }
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "postbuild",
-            "program": "${workspaceFolder}/website/postbuild.js",
-            "cwd": "${workspaceFolder}/website",
-            "env": {
-                "VERSION": "0.2.0",
-                "WRITE_VERSION": "yes",
-                "LIVE_HISTORY": "http://localhost:8181/history"
+                "DOCSSITE_VERSION": "0.1.0",
+                "DOCSSITE_WRITE_VERSION": "true",
+                "DOCSSITE_HISTORY_URL": "http://localhost:8181/history",
+                "DOCSSITE_ROOT_SUBDIR": ""
             }
         }
     ]

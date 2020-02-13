@@ -28,11 +28,11 @@ run `test.sh`
 
 ### Environment variables
 
-`EPUBCHECK_SITE_WRITE_VERSION`: `yes` or `no`, depending on if the site should be written to a version subdirectory.
+`DOCSSITE_WRITE_VERSION`: `true` or `false`, depending on if the site should be written to a version subdirectory.
 
-`EPUBCHECK_SITE_LIVE_HISTORY`: Where to download `/history/*.zip` files from, e.g. `http://localhost:8181/history`.
+`DOCSSITE_HISTORY_URL`: Where to download `/history/*.zip` files from, e.g. `http://localhost:8181/history`.
 
-`EPUBCHECK_SITE_ROOT_SUBDIR`: The subdirectory that the site is deployed to, e.g. for `http://localhost:8080/SUBDIR`, the value should be `SUBDIR`. We need to store this separately because when we run eleventy to generate the verisoned subdirs, we set its `pathPrefix` setting to `EPUBCHECK_SITE_ROOT_SUBDIR + version`. So we need to know the root subdirectory independently of this.
+`DOCSSITE_ROOT_SUBDIR`: The subdirectory that the site is deployed to, e.g. for `http://localhost:8080/SUBDIR`, the value should be `SUBDIR`. We need to store this separately because when we run eleventy to generate the verisoned subdirs, we set its `pathPrefix` setting to `DOCSSITE_ROOT_SUBDIR + version`. So we need to know the root subdirectory independently of this.
 
 *Do not* use beginning or ending slashes with any of these properties.
 
@@ -44,11 +44,11 @@ run `test.sh`
 
 ### `versions.json`
 
-List all versions to date and mark one as current.
+List all versions to date.
 
 ## Marking if a page is not current and listing current and previous versions
 
-This depends on `versions.js` existing at the root level of the site (so: `EPUBCHECK_SITE_ROOT_SUBDIR + /versions.js`). 
+This depends on `versions.js` existing at the root level of the site (so: `DOCSSITE_ROOT_SUBDIR + /versions.js`). 
 
 `versions.js` is generated from a template `versions.njk` and it gets omitted for versioned subdirectory builds. This process is managed in `.eleventy.js` via modifying the `.eleventyignore` file. 
 

@@ -3,7 +3,7 @@ title: Documentation
 ---
 # Documentation
 
-This version: {{ versions.latest }}
+Version: {{ env.DOCSSITE_VERSION }}
 
 Incididunt anim irure enim id enim minim mollit mollit Lorem sint ipsum pariatur. Cillum commodo esse sint ad est qui consectetur ipsum laboris labore anim.
 
@@ -22,7 +22,7 @@ Incididunt anim irure enim id enim minim mollit mollit Lorem sint ipsum pariatur
         let versionsList = document.querySelector("#versionsList");
         let latest = getLatest();
         let releases = getReleases();
-        let thisVersion = "{{ versions.latest }}";
+        let thisVersion = "{{ env.DOCSSITE_VERSION }}";
         versionsList.innerHTML = `
             ${releases.map(release => {
                 let href = getDocsPath(release);
